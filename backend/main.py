@@ -2,6 +2,12 @@
 PhishNet - Multimodal Phishing Detection API
 FastAPI backend with async agent orchestration
 """
+import sys
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 import asyncio
 import time
 from contextlib import asynccontextmanager
