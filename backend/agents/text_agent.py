@@ -73,7 +73,7 @@ def _extract_text_from_html(html: str) -> tuple[str, dict]:
     external_forms = sum(
         1 for a in form_actions
         if a.startswith("http") and not any(
-            domain in a for domain in ["", "localhost"]
+            domain in a for domain in ["localhost"]
         )
     )
 
@@ -156,8 +156,16 @@ class TextAgent:
             }
 
         if self._model_loaded and _tokenizer and _model and _torch:
-            score, top_tokens = self._bert_classify(text)
-            method = "DistilBERT"
+            # Only trust DistilBERT on predominantly Latin/English text;
+            # multilingual pages degrade the checkpoint and cause false positives.
+            ascii_ratio = sum(1 for c in text if c.isascii() and c.isalpha()) / max(len(text), 1)
+            if ascii_ratio >= 0.6:
+                score, top_tokens = self._bert_classify(text)
+                method = "DistilBERT"
+            else:
+                score = _keyword_fallback_score(text)
+                top_tokens = []
+                method = "keyword heuristic (non-latin)"
         else:
             score = _keyword_fallback_score(text)
             top_tokens = []

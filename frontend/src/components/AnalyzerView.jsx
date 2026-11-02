@@ -37,7 +37,7 @@ export default function AnalyzerView({ onResult, lastResult }) {
           <span className="hero-accent"> Multimodal AI</span>
         </h1>
         <p className="hero-sub">
-          URL heuristics · DistilBERT text analysis · MobileNetV3 visual scan
+          URL heuristics · DistilBERT text analysis · MobileNetV3 visual scan (disabled in dev)
         </p>
       </div>
 
@@ -77,7 +77,7 @@ export default function AnalyzerView({ onResult, lastResult }) {
             />
             <AgentCard
               title="Image Agent"
-              subtitle="MobileNetV3 · Screenshot"
+              subtitle="MobileNetV3 · Screenshot (disabled in dev)"
               icon="🖼"
               agentResult={result.image_agent}
               color="warn"

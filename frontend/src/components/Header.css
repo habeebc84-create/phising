@@ -107,11 +107,19 @@
   animation: glow-pulse 2s ease-in-out infinite;
 }
 
-.status-label {
-  font-size: 11px;
-  color: var(--safe);
-  letter-spacing: 0.1em;
+.status-dot.offline {
+  background: var(--danger);
+  box-shadow: 0 0 8px var(--danger);
+  animation: none;
 }
+
+.status-dot.live {
+  background: var(--safe);
+  box-shadow: 0 0 8px var(--safe);
+}
+
+.status-label.offline { color: var(--danger); }
+.status-label.live { color: var(--safe); }
 
 @media (max-width: 560px) {
   .header-status { display: none; }

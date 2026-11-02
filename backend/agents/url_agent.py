@@ -180,6 +180,25 @@ class URLAgent:
         proba = self.model.predict_proba([feat_array])[0]
         phish_score = float(proba[1])
 
+        # Heuristic boost: rule-based signals should never be ignored by the
+        # (weak) synthetic baseline model. Blend via max so clear phishing
+        # indicators raise the score even when the ML model is uncertain.
+        heuristic = 0.0
+        if feat_dict["is_ip"]:
+            heuristic += 0.30
+        if feat_dict["tld_suspicion"] >= 0.5:
+            heuristic += 0.25
+        if feat_dict["brand_lev_distance"] < 0.25 and feat_dict["brand_lev_distance"] > 0:
+            heuristic += 0.20
+        if feat_dict["keyword_count"] >= 3:
+            heuristic += 0.15
+        if feat_dict["url_entropy"] > 4.5:
+            heuristic += 0.10
+        if feat_dict["special_char_count"] >= 5:
+            heuristic += 0.05
+        heuristic = min(heuristic, 1.0)
+        phish_score = max(phish_score, heuristic)
+
         # Identify top contributing features
         importances = self.model.feature_importances_
         feat_names = list(feat_dict.keys())
@@ -192,7 +211,7 @@ class URLAgent:
             reasons.append("uses IP address as host")
         if feat_dict["keyword_count"] >= 3:
             reasons.append(f"{feat_dict['keyword_count']} suspicious keywords found")
-        if feat_dict["brand_lev_distance"] < 0.25:
+        if feat_dict["brand_lev_distance"] < 0.25 and feat_dict["brand_lev_distance"] > 0:
             reasons.append("domain mimics a known brand")
         if feat_dict["tld_suspicion"] > 0.5:
             reasons.append("uses a high-risk TLD")

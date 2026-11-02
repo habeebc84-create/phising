@@ -25,11 +25,10 @@ export default function URLInput({ onSubmit, loading }) {
     <div className="url-input-wrap">
       <form className="url-form" onSubmit={handleSubmit}>
         <div className={`url-field ${loading ? 'loading' : ''}`}>
-          <span className="url-prefix mono">https://</span>
           <input
             className="url-input mono"
             type="text"
-            placeholder="enter any URL to analyze..."
+            placeholder="https://example.com"
             value={url}
             onChange={e => setUrl(e.target.value)}
             disabled={loading}

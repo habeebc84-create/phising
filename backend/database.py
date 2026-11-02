@@ -3,14 +3,13 @@ PhishNet Database — SQLite via SQLAlchemy async
 Stores analysis logs for history view and model retraining.
 """
 import json
+import os
 from datetime import datetime
 
+from dotenv import load_dotenv
 from sqlalchemy import Column, Integer, String, Float, Text, DateTime, select
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
-
-import os
-from dotenv import load_dotenv
 
 load_dotenv()
 

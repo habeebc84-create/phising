@@ -1,6 +1,23 @@
+import { useState, useEffect } from 'react'
+import { checkHealth } from '../utils/api.js'
 import './Header.css'
 
 export default function Header({ activeView, onNavigate }) {
+  const [apiLive, setApiLive] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    async function check() {
+      const ok = await checkHealth()
+      if (!cancelled) setApiLive(ok)
+    }
+    check()
+    const id = setInterval(check, 30000)
+    return () => { cancelled = true; clearInterval(id) }
+  }, [])
+
+  const statusLabel = apiLive === null ? 'CHECKING…' : apiLive ? 'API LIVE' : 'API OFFLINE'
+  const statusClass = apiLive === null ? '' : apiLive ? 'live' : 'offline'
   return (
     <header className="header">
       <div className="header-inner">
@@ -36,8 +53,8 @@ export default function Header({ activeView, onNavigate }) {
         </nav>
 
         <div className="header-status">
-          <span className="status-dot" />
-          <span className="status-label mono">API LIVE</span>
+          <span className={`status-dot ${statusClass}`} />
+          <span className={`status-label mono ${statusClass}`}>{statusLabel}</span>
         </div>
       </div>
     </header>
